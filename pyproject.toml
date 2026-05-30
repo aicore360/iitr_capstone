@@ -1,0 +1,25 @@
+[project]
+name = "iitr-capstone"
+version = "0.1.0"
+description = "Telco Customer Churn Prediction - IIT Roorkee PG Cert capstone (May 2026)"
+requires-python = ">=3.11"
+dependencies = [
+    "joblib>=1.5.3",
+    "matplotlib>=3.10.9",
+    "numpy>=2.4.6",
+    "pandas>=3.0.3",
+    "scikit-learn>=1.8.0",
+    "seaborn>=0.13.2",
+    "xgboost>=3.2.0",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.3",
+]
+
+# pytest configuration: add project root to import path so tests can do
+# `from telco_churn import ...` without an editable install.
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]

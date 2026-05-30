@@ -1,0 +1,32 @@
+# --- Python-generated files (uv default) ---
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# --- Virtual environments ---
+.venv
+
+# --- Project-specific ---
+
+# The Kaggle Telco Churn CSV IS committed for capstone submission convenience
+# (so the course evaluator can clone-and-run without a Kaggle account).
+# Source: https://www.kaggle.com/datasets/blastchar/telco-customer-churn
+# Original dataset credit: IBM (sample data).
+
+# Trained model artefacts are large binaries; regenerate with scripts/02_train.py
+outputs/models/*.joblib
+
+# IDE / editor noise
+.idea/
+.vscode/
+*.swp
+.DS_Store
+
+# Microsoft Office lock files (created while a doc is open)
+~$*
+
+# Personal speaking notes / study materials — not for the grader's repo
+docs/
