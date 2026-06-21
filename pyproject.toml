@@ -16,6 +16,8 @@ dependencies = [
 [dependency-groups]
 dev = [
     "pytest>=9.0.3",
+    "jupyter>=1.1.1",
+    "ipykernel>=6.29.5",
 ]
 
 # pytest configuration: add project root to import path so tests can do
