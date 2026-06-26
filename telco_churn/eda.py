@@ -189,6 +189,52 @@ def plot_monthly_charges_boxplot(df: pd.DataFrame) -> None:
     _savefig("04a_monthly_charges_boxplot")
 
 
+def plot_churn_by_gender_senior(df: pd.DataFrame) -> None:
+    """Bar charts of churn rate by gender and SeniorCitizen — the fairness slide."""
+    fig, axes = plt.subplots(1, 2, figsize=(13, 5))
+    for ax, col in zip(axes, ["gender", "SeniorCitizen"]):
+        rates = df.groupby(col)[config.TARGET_COLUMN].mean() * 100
+        rates.plot(kind="bar", ax=ax, color=["#4C72B0", "#DD8452"])
+        ax.set_title(f"Churn rate by {col}")
+        ax.set_ylabel("Churn rate (%)")
+        ax.set_xlabel("")
+        ax.tick_params(axis="x", rotation=0)
+        for p in ax.patches:
+            ax.annotate(
+                f"{p.get_height():.1f}%",
+                (p.get_x() + p.get_width() / 2, p.get_height()),
+                ha="center", va="bottom", fontsize=12,
+            )
+    _savefig("04b_churn_rate_by_gender_senior")
+
+
+def plot_churn_by_tenure_cohort(df: pd.DataFrame) -> None:
+    """Churn rate by tenure bucket — shows first-year customers are highest risk."""
+    df_t = df.copy()
+    df_t["tenure_bucket"] = pd.cut(
+        df_t["tenure"],
+        bins=[0, 12, 24, 36, 48, 60, 72],
+        labels=["0-12m", "13-24m", "25-36m", "37-48m", "49-60m", "61-72m"],
+        right=True,
+    )
+    cohort_churn = (
+        df_t.groupby("tenure_bucket", observed=True)[config.TARGET_COLUMN].mean() * 100
+    )
+    fig, ax = plt.subplots(figsize=(10, 5))
+    cohort_churn.plot(kind="bar", ax=ax, color="#DD8452")
+    ax.set_title("Churn rate by tenure cohort")
+    ax.set_ylabel("Churn rate (%)")
+    ax.set_xlabel("Tenure bucket")
+    ax.tick_params(axis="x", rotation=0)
+    for p in ax.patches:
+        ax.annotate(
+            f"{p.get_height():.1f}%",
+            (p.get_x() + p.get_width() / 2, p.get_height() + 0.5),
+            ha="center", va="bottom", fontsize=11,
+        )
+    _savefig("04c_churn_rate_by_tenure_cohort")
+
+
 def fairness_check(df: pd.DataFrame) -> None:
     """Print churn rates across protected attributes — the responsible-AI slide.
 
@@ -219,6 +265,8 @@ def run_all_eda(df: pd.DataFrame) -> None:
     plot_categorical_vs_churn(df)
     plot_correlation_heatmap(df)
     plot_monthly_charges_boxplot(df)
+    plot_churn_by_gender_senior(df)
+    plot_churn_by_tenure_cohort(df)
     fairness_check(df)
     print(
         f"\nDone. Figures saved to: "

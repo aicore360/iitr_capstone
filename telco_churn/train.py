@@ -17,6 +17,7 @@ from __future__ import annotations
 import json
 
 import joblib
+import matplotlib.pyplot as plt
 from sklearn.model_selection import StratifiedKFold, cross_val_score
 from sklearn.pipeline import Pipeline
 
@@ -46,6 +47,34 @@ def _cv_scores(pipeline: Pipeline, X, y, n_splits: int = 5) -> dict:
     }
 
 
+def _plot_cv_comparison(cv_scores: dict) -> None:
+    """Bar chart of mean CV ROC-AUC per model with error bars."""
+    names = list(cv_scores.keys())
+    means = [cv_scores[n]["mean"] for n in names]
+    stds  = [cv_scores[n]["std"]  for n in names]
+
+    fig, ax = plt.subplots(figsize=(10, 5))
+    bars = ax.bar(
+        names, means, yerr=stds, capsize=5,
+        color=["#AAAAAA", "#4C72B0", "#55A868", "#DD8452", "#C44E52"],
+    )
+    for bar, mean in zip(bars, means):
+        ax.text(
+            bar.get_x() + bar.get_width() / 2, mean + 0.003,
+            f"{mean:.4f}", ha="center", va="bottom", fontsize=11, fontweight="bold",
+        )
+    ax.set_ylim(0.45, 0.92)
+    ax.axhline(0.5, color="red", linestyle="--", alpha=0.4, label="Random baseline (0.50)")
+    ax.set_ylabel("5-fold CV ROC-AUC")
+    ax.set_title("Model comparison — 5-fold stratified cross-validation")
+    ax.legend()
+    plt.tight_layout()
+    path = config.FIGURES_DIR / "cv_comparison.png"
+    plt.savefig(path, dpi=120, bbox_inches="tight")
+    plt.close()
+    print(f"  wrote {path.relative_to(config.PROJECT_ROOT)}")
+
+
 def train_all(X_train, y_train) -> tuple[str, Pipeline, dict]:
     """Run 5-fold CV on every model, save the winner.
 
@@ -69,6 +98,8 @@ def train_all(X_train, y_train) -> tuple[str, Pipeline, dict]:
             f"  {name:>12}  ROC-AUC = {scores['mean']:.4f}"
             f" (+/- {scores['std']:.4f})"
         )
+
+    _plot_cv_comparison(cv_scores)
 
     # Pick the winner by mean CV ROC-AUC. The Dummy will sit near 0.5 and
     # lose; we still print it as a sanity baseline.

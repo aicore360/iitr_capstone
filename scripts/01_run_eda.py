@@ -11,6 +11,9 @@ PNG files in outputs/figures/:
     02_numerical_distributions.png
     03_categorical_vs_churn.png
     04_correlation_heatmap.png
+    04a_monthly_charges_boxplot.png
+    04b_churn_rate_by_gender_senior.png
+    04c_churn_rate_by_tenure_cohort.png
 
 Plus a fairness-check printout on stdout.
 

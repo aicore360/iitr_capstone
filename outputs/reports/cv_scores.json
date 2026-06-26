@@ -59,6 +59,7 @@
   },
   "tuned_model": "XGBoost",
   "tuned_cv_roc_auc": 0.8504603723468867,
+  "untuned_cv_roc_auc": 0.8352765878189607,
   "best_params": {
     "model__colsample_bytree": 0.8,
     "model__learning_rate": 0.010243250407033817,
